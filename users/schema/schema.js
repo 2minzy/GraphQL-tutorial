@@ -12,11 +12,14 @@ const {
 
 const CompanyType = new GraphQLObjectType({
   name: 'Company',
+  // this function gets defined but does not get excuted until after this entire file with arrow function
+  // 화살표 함수를 통해 UserType이 선언되기 전에 참조하는 에러 해결
   fields: () => ({
     id: { type: GraphQLString },
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     users: {
+      // multiple users
       type: new GraphQLList(UserType),
       resolve(parentValue, args) {
         return axios.get(`http://localhost:3000/companies/${parentValue.id}/users`)
@@ -45,6 +48,7 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    // Multiple RootQuery Entry Points
     user: {
       type: UserType,
       args: { id: { type: GraphQLString } },
